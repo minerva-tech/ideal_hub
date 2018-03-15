@@ -1,0 +1,66 @@
+/dts-v1/;
+/include/ "system-conf.dtsi"
+/{
+    clocks{
+	adc_clk: clock{
+	    #clock-cells = <0>;
+	    compatible = "fixed-clock";
+	    clock-frequency = <250000000>;
+	    clock-output-names = "adc_refclk";
+	};
+    };
+};
+&spi0{
+	adc_ad9467_0: ad9467@0 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "ad9467";
+		reg = <0>;
+		spi-max-frequency = <10000000>;
+		clocks = <&adc_clk 0>;
+		adi,spi-3wire-enable;
+	};
+
+	adc_ad9467_1: ad9467@1 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "ad9467";
+		reg = <1>;
+		spi-max-frequency = <10000000>;
+		clocks = <&adc_clk 0>;
+		adi,spi-3wire-enable;
+	};
+};
+
+&i2c0 {
+    eeprom: eeprom@57 {
+        compatible = "atmel,24c01";
+        reg = <0x57>;
+    };
+};
+
+&axi_ad9467_0{
+	dmas = <&axi_dmac_0 0>;
+	dma-names = "rx";
+	spibus-connected = <&adc_ad9467_0>;
+};
+&axi_ad9467_1{
+        dmas = <&axi_dmac_1 0>;
+        dma-names = "rx";
+        spibus-connected = <&adc_ad9467_1>;
+};         
+&axi_dmac_0{
+        #dma-cells = <1>;
+	clocks = <&clkc 15>;
+        dma-channel {
+                adi,type = <0x0>;
+        };
+};
+&axi_dmac_1{
+        #dma-cells = <1>;
+	clocks = <&clkc 15>;
+	dma-channel {
+        	adi,type = <0x0>;
+        };
+};
+
