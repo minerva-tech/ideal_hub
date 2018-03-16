@@ -7,6 +7,12 @@ mkdir -p images
 cd buildroot
 
 rm -f output/build/linux-custom/.stamp_built output/build/linux-custom/.stamp_*_installed
+
+if [ "x$1" = "xclean" ]; then
+    rm -fr output
+    ./make.sh minerva_ideal_defconfig
+fi
+
 ./make.sh
 
 cd ../dts
