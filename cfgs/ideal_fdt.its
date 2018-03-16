@@ -27,7 +27,7 @@
 		};
 		fdt@1 {
 			description = "Flattened Device Tree blob";
-			data = /incbin/("../buildroot/output/images/zynq-zed.dtb");
+			data = /incbin/("../images/zynq-zed.dtb");
 			type = "flat_dt";
 			arch = "arm";
 			compression = "none";
