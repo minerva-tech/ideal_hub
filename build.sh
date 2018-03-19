@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 export PATH=$PATH:${PWD}/buildroot/output/host/bin
 
 mkdir -p images
