@@ -45,6 +45,12 @@ else
 LIBXML2_CONF_OPTS += --without-iconv
 endif
 
+LIBXML2_POST_BUILD_HOOKS += CREATE_LIBXML2_INCLUDE_LINK
+
+define CREATE_LIBXML2_INCLUDE_LINK
+(cd ${STAGING_DIR}/usr/include; rm -fr libxml2; ln -s . libxml2)
+endef
+
 $(eval $(autotools-package))
 $(eval $(host-autotools-package))
 
