@@ -86,6 +86,12 @@ ifeq ($(BR2_PACKAGE_HOST_UBOOT_TOOLS),y)
 LINUX_DEPENDENCIES += host-uboot-tools
 endif
 
+define LINUX_MAKE_SYMBOLIC_LINK_EXTRACT
+    (cd $(@D)/..; rm -f linux; ln -s $(@D) linux)
+endef
+
+LINUX_POST_EXTRACT_HOOKS += LINUX_MAKE_SYMBOLIC_LINK_EXTRACT
+
 ifneq ($(ARCH_XTENSA_OVERLAY_FILE),)
 define LINUX_XTENSA_OVERLAY_EXTRACT
 	$(call arch-xtensa-overlay-extract,$(@D),linux)

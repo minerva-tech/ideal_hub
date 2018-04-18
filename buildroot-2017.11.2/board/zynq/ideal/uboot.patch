@@ -1,0 +1,29 @@
+--- a/include/configs/zynq-common.h	2018-04-17 15:00:53.959147775 +0700
++++ b/include/configs/zynq-common.h	2018-04-17 16:10:54.287092616 +0700
+@@ -430,11 +430,10 @@
+ /* qspi mode is working fine */
+ #ifdef CONFIG_ZYNQ_QSPI
+ #define CONFIG_SPL_SPI_LOAD
+-#define CONFIG_SYS_SPI_U_BOOT_OFFS	0x100000
+-#define CONFIG_SYS_SPI_ARGS_OFFS	0x200000
+-#define CONFIG_SYS_SPI_ARGS_SIZE	0x80000
+-#define CONFIG_SYS_SPI_KERNEL_OFFS	(CONFIG_SYS_SPI_ARGS_OFFS + \
+-					CONFIG_SYS_SPI_ARGS_SIZE)
++#define CONFIG_SYS_SPI_U_BOOT_OFFS	0x20000
++#define CONFIG_SYS_SPI_ARGS_OFFS	0xA0000
++#define CONFIG_SYS_SPI_ARGS_SIZE	0x20000
++#define CONFIG_SYS_SPI_KERNEL_OFFS	0x100000
+ #endif
+ 
+ #define CONFIG_SPL_RAM_DEVICE
+--- a/board/xilinx/zynq/zynq-microzed/ps7_init_gpl.h	2017-04-07 12:57:12.000000000 +0700
++++ b/board/xilinx/zynq/zynq-microzed/ps7_init_gpl.h	2018-04-17 20:16:42.558509855 +0700
+@@ -82,7 +82,7 @@
+ #define USB1_FREQ  60000000
+ #define SDIO_FREQ  50000000
+ #define UART_FREQ  50000000
+-#define SPI_FREQ  10000000
++#define SPI_FREQ  166666672
+ #define I2C_FREQ  111111115
+ #define WDT_FREQ  111111115
+ #define TTC_FREQ  50000000
