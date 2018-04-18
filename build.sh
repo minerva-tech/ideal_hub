@@ -18,8 +18,8 @@ fi
 ./make.sh
 
 cd ../dts
-linux-dtc -I dts -O dtb -b 0 -Wno-unit_address_vs_reg -o ../images/ideal.dtb system-top.dts
-#linux-dtc -I dts -O dtb -b 0 -Wno-unit_address_vs_reg -o ../images/ideal.dtb zynq-zed.dts
+#linux-dtc -I dts -O dtb -b 0 -Wno-unit_address_vs_reg -o ../images/ideal.dtb system-top.dts
+linux-dtc -I dts -O dtb -b 0 -Wno-unit_address_vs_reg -o ../images/ideal.dtb zynq-zed.dts
 
 cd ../images
 mkimage -f ../cfgs/ideal_fdt.its ideal.ub
