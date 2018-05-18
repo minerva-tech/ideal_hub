@@ -23,7 +23,14 @@ linux-dtc -I dts -O dtb -b 0 -Wno-unit_address_vs_reg -o ../images/ideal.dtb zyn
 
 cd ../images
 mkimage -f ../cfgs/ideal_fdt.its ideal.ub
-cp -f ../buildroot/output/images/boot.bin fsbl-uboot.bin
-dd if=../buildroot/output/images/u-boot.img of=fsbl-uboot.bin seek=128 bs=1K
+#cp -f ../buildroot/output/images/boot.bin fsbl-uboot.bin
+#dd if=../buildroot/output/images/u-boot.img of=fsbl-uboot.bin seek=128 bs=1K
+cd ../
 
+[ -f settings.sh ] && source ./settings.sh
+
+cd fsbl
+rm -f u-boot.elf
+ln -s ../buildroot/output/images/u-boot u-boot.elf
+PROJ_NAME=iDeal_hub ./build_boot_bin.sh iDeal_hub.hdf u-boot.elf
 cd ../

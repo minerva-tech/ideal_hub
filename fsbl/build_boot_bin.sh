@@ -17,7 +17,7 @@ depends () {
 	exit 1
 }
 
-[ -z "${PROJ_NAME}" ] && PROJ_NAME=system_top
+[ -z "$PROJ_NAME" ] && PROJ_NAME=system_top
 
 ### Check command line parameters
 echo $HDF_FILE | grep -q ".hdf" || usage
@@ -58,7 +58,7 @@ echo 'sdk projects -build -type all' >> $BUILD_DIR/create_fsbl_project.tcl
 echo 'the_ROM_image:' > $OUTPUT_DIR/zynq.bif
 echo '{' >> $OUTPUT_DIR/zynq.bif
 echo '[bootloader] fsbl.elf' >> $OUTPUT_DIR/zynq.bif
-echo '${PROJ_NAME}.bit' >> $OUTPUT_DIR/zynq.bif
+echo "${PROJ_NAME}.bit" >> $OUTPUT_DIR/zynq.bif
 echo 'u-boot.elf' >> $OUTPUT_DIR/zynq.bif
 echo '}' >> $OUTPUT_DIR/zynq.bif
 
