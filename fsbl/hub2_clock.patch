@@ -1,0 +1,39 @@
+diff -Nru build_boot_bin/build/sdk/fsbl/Release/src/subdir.mk /home/sand/tmp/build_boot_bin/build/sdk/fsbl/Release/src/subdir.mk
+--- a/build/sdk/fsbl/Release/src/subdir.mk	2018-05-18 17:53:31.493140410 +0700
++++ b/build/sdk/fsbl/Release/src/subdir.mk	2018-05-18 17:48:49.799143096 +0700
+@@ -7,6 +7,7 @@
+ ../src/lscript.ld 
+ 
+ C_SRCS += \
++../src/hub2_clock.c \
+ ../src/fsbl_hooks.c \
+ ../src/image_mover.c \
+ ../src/main.c \
+@@ -24,6 +25,7 @@
+ 
+ OBJS += \
+ ./src/fsbl_handoff.o \
++./src/hub2_clock.o \
+ ./src/fsbl_hooks.o \
+ ./src/image_mover.o \
+ ./src/main.o \
+diff -Nru build_boot_bin/build/sdk/fsbl/src/fsbl_hooks.c /home/sand/tmp/build_boot_bin/build/sdk/fsbl/src/fsbl_hooks.c
+--- a/build/sdk/fsbl/src/fsbl_hooks.c	2018-05-18 17:53:19.278140526 +0700
++++ b/build/sdk/fsbl/src/fsbl_hooks.c	2018-05-18 17:44:16.215145705 +0700
+@@ -59,7 +59,7 @@
+ 
+ 
+ /************************** Function Prototypes ******************************/
+-
++void clock_config(void);
+ 
+ /******************************************************************************
+ * This function is the hook which will be called  before the bitstream download.
+@@ -137,6 +137,7 @@
+ 	 * User logic to be added here.
+ 	 * Errors to be stored in the status variable and returned
+ 	 */
++	clock_config();
+ 	fsbl_printf(DEBUG_INFO,"In FsblHookBeforeHandoff function \r\n");
+ 
+ 	return (Status);

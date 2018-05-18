@@ -52,7 +52,11 @@ echo 'sdk setws ./build/sdk' >> $BUILD_DIR/create_fsbl_project.tcl
 echo "sdk createhw -name hw_0 -hwspec `basename $HDF_FILE`" >> $BUILD_DIR/create_fsbl_project.tcl
 echo 'sdk createapp -name fsbl -hwproject hw_0 -proc $cpu_name -os standalone -lang C -app {Zynq FSBL}' >> $BUILD_DIR/create_fsbl_project.tcl
 echo 'configapp -app fsbl build-config release' >> $BUILD_DIR/create_fsbl_project.tcl
-echo 'sdk projects -build -type all' >> $BUILD_DIR/create_fsbl_project.tcl
+
+echo "hsi open_hw_design `basename $HDF_FILE`" > $BUILD_DIR/build_fsbl_project.tcl
+echo 'set cpu_name [lindex [hsi get_cells -filter {IP_TYPE==PROCESSOR}] 0]' >> $BUILD_DIR/build_fsbl_project.tcl
+echo 'sdk setws ./build/sdk' >> $BUILD_DIR/build_fsbl_project.tcl
+echo 'sdk projects -build -type all' >> $BUILD_DIR/build_fsbl_project.tcl
 
 ### Create zynq.bif file used by bootgen
 echo 'the_ROM_image:' > $OUTPUT_DIR/zynq.bif
@@ -66,6 +70,10 @@ echo '}' >> $OUTPUT_DIR/zynq.bif
 (
 	cd $BUILD_DIR
 	xsdk -batch -source create_fsbl_project.tcl
+	xsdk -batch -source build_fsbl_project.tcl
+	cp -f ../hub2_clock.c build/sdk/fsbl/src
+	patch -p1 -i ../hub2_clock.patch
+	xsdk -batch -source build_fsbl_project.tcl
 )
 
 ### Copy fsbl and system_top.bit into the output folder
