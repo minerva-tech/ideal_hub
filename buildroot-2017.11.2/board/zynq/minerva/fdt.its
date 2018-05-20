@@ -11,7 +11,7 @@
 	images {
 		kernel@1 {
 			description = "Xilinx Linux kernel";
-			data = /incbin/("../buildroot/output/build/linux/arch/arm/boot/zImage");
+			data = /incbin/("../../../output/build/linux/arch/arm/boot/zImage");
 			type = "kernel";
 			arch = "arm";
 			os = "linux";
@@ -27,7 +27,7 @@
 		};
 		ramdisk@1 {
 			description = "Xilinx Linux ramdisk";
-			data = /incbin/("../buildroot/output/images/rootfs.cpio.gz");
+			data = /incbin/("../../../output/images/rootfs.cpio.gz");
 			type = "ramdisk";
 			arch = "arm";
 			os = "linux";
@@ -43,7 +43,7 @@
 		};
 		fdt@1 {
 			description = "Flattened Device Tree blob";
-			data = /incbin/("../images/ideal.dtb");
+			data = /incbin/("../../../output/images/minerva.dtb");
 			type = "flat_dt";
 			arch = "arm";
 			compression = "none";

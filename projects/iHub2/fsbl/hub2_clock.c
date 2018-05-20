@@ -3,7 +3,7 @@
 #include "xiicps.h"
 #include "xil_printf.h"
 #include "assert.h"
-#include "hub2_commander.h"
+//#include "hub2_commander.h"
 
 #define IIC_SLAVE_ADDR		(0xD4>>1)
 #define IIC_SCLK_RATE		100000

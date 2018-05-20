@@ -17,8 +17,6 @@ depends () {
 	exit 1
 }
 
-[ -z "$PROJ_NAME" ] && PROJ_NAME=system_top
-
 ### Check command line parameters
 echo $HDF_FILE | grep -q ".hdf" || usage
 echo $UBOOT_FILE | grep -q -e ".elf" -e "uboot" || usage
@@ -58,35 +56,33 @@ echo 'set cpu_name [lindex [hsi get_cells -filter {IP_TYPE==PROCESSOR}] 0]' >> $
 echo 'sdk setws ./build/sdk' >> $BUILD_DIR/build_fsbl_project.tcl
 echo 'sdk projects -build -type all' >> $BUILD_DIR/build_fsbl_project.tcl
 
-### Create zynq.bif file used by bootgen
-echo 'the_ROM_image:' > $OUTPUT_DIR/zynq.bif
-echo '{' >> $OUTPUT_DIR/zynq.bif
-echo '[bootloader] fsbl.elf' >> $OUTPUT_DIR/zynq.bif
-echo "${PROJ_NAME}.bit" >> $OUTPUT_DIR/zynq.bif
-echo 'u-boot.elf' >> $OUTPUT_DIR/zynq.bif
-echo '}' >> $OUTPUT_DIR/zynq.bif
-
 ### Build fsbl.elf
 (
 	cd $BUILD_DIR
 	xsdk -batch -source create_fsbl_project.tcl
 	xsdk -batch -source build_fsbl_project.tcl
-	cp -f ../hub2_clock.c build/sdk/fsbl/src
-	patch -p1 -i ../hub2_clock.patch
-	xsdk -batch -source build_fsbl_project.tcl
+	if [ -n "$3" ]; then
+	    eval $3
+	    xsdk -batch -source build_fsbl_project.tcl
+	fi
 )
 
-### Copy fsbl and system_top.bit into the output folder
-cp $BUILD_DIR/build/sdk/fsbl/Release/fsbl.elf $OUTPUT_DIR/fsbl.elf
-cp $BUILD_DIR/build/sdk/hw_0/${PROJ_NAME}.bit $OUTPUT_DIR/${PROJ_NAME}.bit
+### Copy fsbl and *.bit into the output folder
+cp $BUILD_DIR/build/sdk/fsbl/Release/fsbl.elf $OUTPUT_DIR
+cp $BUILD_DIR/build/sdk/hw_0/*.bit $OUTPUT_DIR
+
+BITSTREAM=`basename $(ls ${OUTPUT_DIR}/*.bit)`
+
+### Create zynq.bif file used by bootgen
+echo 'the_ROM_image:' > $OUTPUT_DIR/zynq.bif
+echo '{' >> $OUTPUT_DIR/zynq.bif
+echo '[bootloader] fsbl.elf' >> $OUTPUT_DIR/zynq.bif
+echo "${BITSTREAM}" >> $OUTPUT_DIR/zynq.bif
+echo 'u-boot.elf' >> $OUTPUT_DIR/zynq.bif
+echo '}' >> $OUTPUT_DIR/zynq.bif
 
 ### Build BOOT.BIN
 (
 	cd $OUTPUT_DIR
 	bootgen -arch zynq -image zynq.bif -o BOOT.BIN -w
 )
-
-### Optionally tar.gz the entire output folder with the name given in argument 3
-if [ ${#3} -ne 0 ]; then
-	tar czvf $3.tar.gz $OUTPUT_DIR
-fi
