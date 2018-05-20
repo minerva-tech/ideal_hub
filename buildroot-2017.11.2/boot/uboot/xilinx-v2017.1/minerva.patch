@@ -1,0 +1,36 @@
+--- a/include/configs/zynq-common.h	2017-04-07 12:57:12.000000000 +0700
++++ b/include/configs/zynq-common.h	2018-05-20 12:59:54.737126797 +0700
+@@ -180,6 +180,7 @@
+ # elif defined(CONFIG_ZYNQ_QSPI)
+ /* Environment in Serial Flash */
+ #  define CONFIG_ENV_IS_IN_SPI_FLASH
++#  define CONFIG_ENV_OFFSET 0x7D0000
+ # elif defined(CONFIG_NAND_ZYNQ)
+ /* Environment in NAND flash */
+ #  define CONFIG_ENV_IS_IN_NAND
+@@ -212,7 +213,8 @@
+ 	"boot_image=BOOT.bin\0"	\
+ 	"loadbit_addr=0x100000\0"	\
+ 	"loadbootenv_addr=0x2000000\0" \
+-	"kernel_size=0x500000\0"	\
++	"kernel_size=0x780000\0"	\
++	"kernel_qspi_offset=0x800000\0"	\
+ 	"devicetree_size=0x20000\0"	\
+ 	"ramdisk_size=0x5E0000\0"	\
+ 	"boot_size=0xF00000\0"	\
+@@ -239,12 +241,9 @@
+ 		"cp.b 0xE2620000 ${ramdisk_load_address} ${ramdisk_size} && " \
+ 		"bootm ${kernel_load_address} ${ramdisk_load_address} ${devicetree_load_address}\0" \
+ 	"qspiboot=echo Copying Linux from QSPI flash to RAM... && " \
+-		"sf probe 0 0 0 && " \
+-		"sf read ${kernel_load_address} 0x100000 ${kernel_size} && " \
+-		"sf read ${devicetree_load_address} 0x600000 ${devicetree_size} && " \
+-		"echo Copying ramdisk... && " \
+-		"sf read ${ramdisk_load_address} 0x620000 ${ramdisk_size} && " \
+-		"bootm ${kernel_load_address} ${ramdisk_load_address} ${devicetree_load_address}\0" \
++		"sf probe 0 20000000 0 && " \
++		"sf read ${kernel_load_address} ${kernel_qspi_offset} ${kernel_size} && " \
++		"bootm ${kernel_load_address}\0" \
+ 	"uenvboot=" \
+ 		"if run loadbootenv; then " \
+ 			"echo Loaded environment from ${bootenv}; " \
