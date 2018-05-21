@@ -14,6 +14,11 @@ print_green_msg ()
     echo -e "\033[1;32m""$1""\033[0m"
 }
 
+print_blue_msg ()
+{
+    echo -e "\033[0;34m""$1""\033[0m"
+}
+
 if [ ! -d project ]; then
     print_red_msg "Error: link to the project directory does not exist !!!"
     print_red_msg "Please create it. Example:"
@@ -55,12 +60,14 @@ do
 done
 
 if [ "x$1" = "xclean" ]; then
+    print_blue_msg "Cleaning ..."
     rm -fr output
     ./make.sh project_defconfig
 fi
 
 [ ! -f .config ] && ./make.sh project_defconfig
 
+print_blue_msg "Building buildroot ..."
 ./make.sh
 
 cd ../
@@ -77,6 +84,8 @@ else
     print_green_msg "ln -s /opt/Xilinx/Vivado/2018.1/settings64.sh xilinx_settings.sh"
     exit 3
 fi
+
+print_blue_msg "Building FSBL ..."
 
 mkdir -p fsbl
 cd fsbl
@@ -101,3 +110,5 @@ fi
 cp -f output_boot_bin/BOOT.BIN ../images
 
 cd ${TOP_DIR}
+
+print_blue_msg "DONE."
