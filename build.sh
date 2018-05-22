@@ -4,6 +4,8 @@ set -e
 
 export PATH=$PATH:${PWD}/buildroot/output/host/bin
 
+CLEAN=""
+
 print_red_msg ()
 {
     echo -e "\033[0;31m"$1"\033[0m"
@@ -19,11 +21,52 @@ print_blue_msg ()
     echo -e "\033[0;34m""$1""\033[0m"
 }
 
+usage () {
+    echo -n "$1 [options] [project name]"
+    echo -e "\t-c --- clean project building directories"
+}
+
+# parse command line into arguments
+res=`getopt c:h $*`
+rc=$?
+# check result of parsing
+if [ $rc != 0 ]
+then
+    usage $0
+    exit 1
+fi
+
+set -- $res
+
+# set options
+while [ $1 != -- ]
+do
+    case $1 in
+    -c)	# clean
+	CLEAN=yes;;
+    -h)	# print help
+	usage $0
+	exit 0;;
+    esac
+    shift   # next flag
+done
+shift   # skip --
+
+# turn on exit-on-error mode
+set -e
+
+if [ -n "$1" -a -d projects/$1 ]; then
+    rm -f project
+    ln -s projects/$1 project
+fi
+
 if [ ! -d project ]; then
     print_red_msg "Error: link to the project directory does not exist !!!"
-    print_red_msg "Please create it. Example:"
+    print_red_msg "Please create it manually. Example:"
     print_green_msg "ln -s projects/iHub2 project"
-    exit 1
+    print_red_msg "Also you can specify project name in %0 command line. Example:"
+    print_green_msg "%0 iHub2"
+    exit 2
 fi
 
 mkdir -p buildroot/dl
@@ -39,7 +82,7 @@ rm -fr buildroot/configs
 
 if [ ! -f xilinx/top.dts -a ! -d xilinx/top.dts ]; then
     print_red_msg "Error: project/xilinx/top.dts file does not exist !!!"
-    exit 2
+    exit 3
 fi
 
 mkdir -p buildroot/configs
@@ -59,8 +102,8 @@ do
     ln -sr ${BUILDROOT}/$i $i
 done
 
-if [ "x$1" = "xclean" ]; then
-    print_blue_msg "Cleaning ..."
+if [ -n "$CLEAN" ]; then
+    print_blue_msg "Cleaning all ..."
     rm -fr output
     ./make.sh project_defconfig
 fi
@@ -82,7 +125,7 @@ else
     print_red_msg "Warning: ${XILINX_SETTINGS} does not exist, 'BOOT.BIN' image won't be build !!!"
     print_red_msg "Please install Xilinx Vivado SDK and create a link. Example:"
     print_green_msg "ln -s /opt/Xilinx/Vivado/2018.1/settings64.sh xilinx_settings.sh"
-    exit 3
+    exit 4
 fi
 
 print_blue_msg "Building FSBL ..."
@@ -94,10 +137,10 @@ ln -s ../buildroot/output/images/u-boot u-boot.elf
 HDF=`ls ../xilinx/*.hdf`
 if [ -z "$HDF" ]; then
     print_red_msg "Error: there is no HDF file in ${PWD}/../xilinx folder !"
-    exit 4
+    exit 5
 elif [ `echo $HDF | wc -w` -ne 1 ]; then
     print_red_msg "Error: there are more than one HDF file in ${PWD}/../xilinx folder !"
-    exit 5
+    exit 6
 fi
 
 PATCH=${PWD}/patch.sh
