@@ -1,4 +1,0 @@
-build_boot_bin/
-output_boot_bin/
-u-boot.elf
-patch.sh
