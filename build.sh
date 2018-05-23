@@ -27,7 +27,7 @@ usage () {
 }
 
 # parse command line into arguments
-res=`getopt c:h $*`
+res=`getopt ch $*`
 rc=$?
 # check result of parsing
 if [ $rc != 0 ]
@@ -50,7 +50,7 @@ do
     esac
     shift   # next flag
 done
-shift   # skip --
+shift
 
 # turn on exit-on-error mode
 set -e
@@ -64,8 +64,8 @@ if [ ! -d project ]; then
     print_red_msg "Error: link to the project directory does not exist !!!"
     print_red_msg "Please create it manually. Example:"
     print_green_msg "ln -s projects/iHub2 project"
-    print_red_msg "Also you can specify project name in %0 command line. Example:"
-    print_green_msg "%0 iHub2"
+    print_red_msg "Also you can specify project name in $0 command line. Example:"
+    print_green_msg "$0 iHub2"
     exit 2
 fi
 
