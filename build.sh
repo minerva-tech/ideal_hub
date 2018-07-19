@@ -55,8 +55,13 @@ shift
 # turn on exit-on-error mode
 set -e
 
-if [ -n "$1" -a -d projects/$1 ]; then
-    rm -f project
+if [ -z "$1" ]; then
+    if [ ! -d projects/$1 ]; then
+	print_red_message "Project folder $1 does not exist !"
+	exit 2
+    fi
+else
+    rm -fr project
     ln -s projects/$1 project
 fi
 
@@ -66,7 +71,7 @@ if [ ! -d project ]; then
     print_green_msg "ln -s projects/iHub2 project"
     print_red_msg "Also you can specify project name in $0 command line. Example:"
     print_green_msg "$0 iHub2"
-    exit 2
+    exit 3
 fi
 
 mkdir -p buildroot/dl
@@ -82,7 +87,7 @@ rm -fr buildroot/configs
 
 if [ ! -f xilinx/top.dts -a ! -d xilinx/top.dts ]; then
     print_red_msg "Error: project/xilinx/top.dts file does not exist !!!"
-    exit 3
+    exit 4
 fi
 
 mkdir -p buildroot/configs
@@ -94,7 +99,7 @@ cp -f ../defconfig configs/project_defconfig
 
 rm -f output/build/linux-custom/.stamp_built output/build/linux-custom/.stamp_*_installed
 
-LINK_LIST="arch boot Config.in docs linux Makefile.legacy support toolchain build Config.in.legacy dl fs Makefile make.sh package system utils"
+LINK_LIST="arch boot Config.in docs linux Makefile.legacy support toolchain Config.in.legacy dl fs Makefile make.sh package system utils"
 
 for i in $LINK_LIST
 do
@@ -125,7 +130,7 @@ else
     print_red_msg "Warning: ${XILINX_SETTINGS} does not exist, 'BOOT.BIN' image won't be build !!!"
     print_red_msg "Please install Xilinx Vivado SDK and create a link. Example:"
     print_green_msg "ln -s /opt/Xilinx/Vivado/2018.1/settings64.sh xilinx_settings.sh"
-    exit 4
+    exit 5
 fi
 
 print_blue_msg "Building FSBL ..."
@@ -137,10 +142,10 @@ ln -s ../buildroot/output/images/u-boot u-boot.elf
 HDF=`ls ../xilinx/*.hdf`
 if [ -z "$HDF" ]; then
     print_red_msg "Error: there is no HDF file in ${PWD}/../xilinx folder !"
-    exit 5
+    exit 6
 elif [ `echo $HDF | wc -w` -ne 1 ]; then
     print_red_msg "Error: there are more than one HDF file in ${PWD}/../xilinx folder !"
-    exit 6
+    exit 7
 fi
 
 PATCH=${PWD}/patch.sh
