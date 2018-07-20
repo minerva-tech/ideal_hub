@@ -32,8 +32,8 @@
 			arch = "arm";
 			os = "linux";
 			compression = "none";
-			load = <00000000>;
-			entry = <00000000>;
+			load = <0x1000000>;
+			entry = <0x1000000>;
 			hash@1 {
 				algo = "crc32";
 			};
