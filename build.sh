@@ -97,7 +97,7 @@ mkdir -p board/zynq
 cp -dpfr ${BUILDROOT}/board/zynq/minerva board/zynq
 cp -f ../defconfig configs/project_defconfig
 
-rm -f output/build/linux-custom/.stamp_built output/build/linux-custom/.stamp_*_installed
+rm -f output/build/linux-*/.stamp_built output/build/linux-*/.stamp_*_installed
 
 LINK_LIST="arch boot Config.in docs linux Makefile.legacy support toolchain Config.in.legacy dl fs Makefile make.sh package system utils"
 
